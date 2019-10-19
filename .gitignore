@@ -1,0 +1,9 @@
+.ccls-cache/
+CMakeCache.txt
+CMakeFiles
+Makefile
+Siv3D_App
+cmake_install.cmake
+compile_commands.json
+procon30-kyogi-GUI_log.html
+resources
