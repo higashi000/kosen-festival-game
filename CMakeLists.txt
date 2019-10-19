@@ -32,6 +32,7 @@ include_directories(
 
 set(SOURCE_FILES
 	"./src/Main.cpp"
+        "./src/connector.cpp"
 )
 
 add_executable(Siv3D_App ${SOURCE_FILES})
