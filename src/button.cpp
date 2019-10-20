@@ -27,7 +27,7 @@ p30kG::Button &p30kG::Button::draw() {
     } else if (isArea == U"1") {
       rect.draw(Color(234, 145, 152));
     } else if (isArea == U"2") {
-      rect.draw(Color(184, 192, 0));
+      rect.draw(Color(157, 204, 224));
     }
   } else if (nowColor == U"1") {
     rect.draw(Color(255, 0, 0));
