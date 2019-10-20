@@ -84,6 +84,17 @@ Field Connector::getFieldData() {
 
   field.maxTurn = s3d::Unicode::Widen(parseStr[12]);
 
+  field.areaPointInfo = Array<Array<String>>(field.height, Array<String>(field.width));
+  for (int i = 0; i < field.height; ++i) {
+    auto line = (split(parseStr[13], ';'))[i];
+    auto tmp = split(line, ' ');
+    for (int j = 0; j < field.width; ++j) {
+      field.areaPointInfo[i][j] = s3d::Unicode::Widen(tmp[j]);
+    }
+  }
+
+
+
   return field;
 }
 
