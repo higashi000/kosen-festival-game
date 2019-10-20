@@ -34,6 +34,7 @@ set(SOURCE_FILES
 	"./src/Main.cpp"
         "./src/connector.cpp"
         "./src/button.cpp"
+        "./src/game.cpp"
 )
 
 add_executable(Siv3D_App ${SOURCE_FILES})
