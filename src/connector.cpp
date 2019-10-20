@@ -84,8 +84,6 @@ Field Connector::getFieldData() {
 
   field.maxTurn = s3d::Unicode::Widen(parseStr[12]);
 
-  std::cout << parseStr[0] <<  std::endl;
-
   return field;
 }
 
