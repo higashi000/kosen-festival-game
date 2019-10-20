@@ -1,15 +1,16 @@
 #include "button.hpp"
+#include <iostream>
 
 p30kG::Button::Button() {
-  rect = Rect(100, 100, 70, 70);
-  nowColor = 0;
-  isArea = 0;
-  point = U"";
+  rect = Rect(0, 0, 70, 70);
+  nowColor = U"0";
+  isArea = U"0";
+  point = U"0";
   font = Font(30);
   pos = Vec2(0, 0);
 }
 
-p30kG::Button::Button(int color, int area, int x, int y, String tilePoint) {
+p30kG::Button::Button(String color, String area, int x, int y, String tilePoint) {
   rect = Rect(x, y, 70, 70);
   nowColor = color;
   isArea = area;
@@ -20,17 +21,17 @@ p30kG::Button::Button(int color, int area, int x, int y, String tilePoint) {
 }
 
 p30kG::Button &p30kG::Button::draw() {
-  if (nowColor == 0) {
-    if (isArea == 0) {
+  if (nowColor == U"0") {
+    if (isArea == U"0") {
       rect.draw(Color(255, 255, 255));
-    } else if (isArea == 1) {
+    } else if (isArea == U"1") {
       rect.draw(Color(234, 145, 152));
-    } else if (isArea == 2) {
+    } else if (isArea == U"2") {
       rect.draw(Color(184, 192, 0));
     }
-  } else if (nowColor == 1) {
+  } else if (nowColor == U"1") {
     rect.draw(Color(255, 0, 0));
-  } else if (nowColor == 2) {
+  } else if (nowColor == U"2") {
     rect.draw(Color(0, 0, 255));
   }
 

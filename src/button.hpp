@@ -8,15 +8,15 @@ class Button {
   public :
     Rect rect;
   private :
-    int nowColor;
-    int isArea;
+    String nowColor;
+    String isArea;
     String point;
     Font font;
     Vec2 pos;
 
   public:
     Button();
-    Button(int color, int area, int x, int y, String tilePoint);
+    Button(String color, String area, int x, int y, String tilePoint);
     void updateColor();
     Button& draw();
 };
