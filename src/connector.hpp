@@ -6,6 +6,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <string>
+#include <vector>
+#include <sstream>
 #include <unistd.h>
 #include "field.hpp"
 
@@ -13,9 +16,11 @@ namespace p30kG {
 class Connector {
 
   public:
-    void getFieldData();
+    Field getFieldData();
     void sendResult();
 };
+
+std::vector<std::string> split(std::string str, char splitChar);
 
 } // namespace p30kG
 #endif
