@@ -66,7 +66,6 @@ Field Connector::getFieldData() {
 
   auto tmpMyPoint = split(parseStr[8], ' ');
   field.myTilePoint = std::stoi(tmpMyPoint[0]);
-  field.myAreaPoint = std::stoi(tmpMyPoint[1]);
 
   field.rivalTeamID = std::stoi(parseStr[9]);
   field.rivalAgentData = std::vector<std::vector<int>>(field.agentNum, std::vector<int>(3));
@@ -80,20 +79,34 @@ Field Connector::getFieldData() {
   }
   auto tmpRivalPoint = split(parseStr[11], ' ');
   field.rivalTilePoint = std::stoi(tmpRivalPoint[0]);
-  field.rivalAreaPoint = std::stoi(tmpRivalPoint[1]);
 
   field.maxTurn = s3d::Unicode::Widen(parseStr[12]);
 
+  field.myAreaPoint = 0;
+  field.rivalAreaPoint = 0;
   field.areaPointInfo = Array<Array<String>>(field.height, Array<String>(field.width));
   for (int i = 0; i < field.height; ++i) {
     auto line = (split(parseStr[13], ';'))[i];
+    auto pointLine = split(parseStr[1], ';');
     auto tmp = split(line, ' ');
+    auto tmpPoint = split(pointLine[i], ' ');
     for (int j = 0; j < field.width; ++j) {
       field.areaPointInfo[i][j] = s3d::Unicode::Widen(tmp[j]);
+      if (tmp[j] == "3") {
+        field.myAreaPoint += abs(std::stoi(tmpPoint[j]));
+        field.rivalAreaPoint += abs(std::stoi(tmpPoint[j]));
+        std::cout << "a" << std::endl;
+      } else if (tmp[j] == "2") {
+        field.myAreaPoint += abs(std::stoi(tmpPoint[j]));
+        std::cout << "b" << std::endl;
+      } else if (tmp[j] == "1") {
+        int point = std::stoi(tmpPoint[j]);
+        field.rivalAreaPoint += abs(point);
+        std::cout << "c" << std::endl;
+        std::cout << field.rivalAreaPoint << std::endl;
+      }
     }
   }
-
-
 
   return field;
 }

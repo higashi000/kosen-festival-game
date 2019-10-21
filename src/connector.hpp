@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <Siv3D.hpp>
 #include <unistd.h>
 #include "field.hpp"
 
