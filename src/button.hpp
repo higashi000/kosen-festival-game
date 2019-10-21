@@ -13,12 +13,16 @@ class Button {
     String point;
     Font font;
     Vec2 pos;
+    int posX;
+    int posY;
 
   public:
     Button();
     Button(String color, String area, int x, int y, String tilePoint);
     void updateColor();
+    bool isClick();
     Button& draw();
+    Button& draw(bool onAgent);
 };
 } // namespace p30kG
 
