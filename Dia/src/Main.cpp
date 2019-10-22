@@ -10,8 +10,12 @@ void Main()
   p30kG::Game game;
 
   game.setFieldData();
+  Rect rect = Rect(683, 384, 500, 500);
+  bool start = false;
 
   while (System::Update()) {
-    game.dispField();
+    if (!start) rect.draw(Palette::Magenta);
+    if (rect.leftClicked()) start = true;
+    if (start) game.dispField();
   }
 }

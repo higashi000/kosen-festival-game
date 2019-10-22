@@ -13,6 +13,7 @@ Game::Game() {
   answerSend = Rect(0, 0, 150, 100);
   fieldUpdate = Rect(0, 0, 150, 100);
   canUpdate = true;
+  turnSt = time(NULL);
 }
 void Game::dispField() {
   const int dx[] = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -64,12 +65,13 @@ void Game::dispField() {
       field = conn.getFieldData();
       setFieldData();
       turn++;
+      turnSt = time(NULL);
     }
   }
 
 
   if (canUpdate) {
-    if (10 < time(NULL) - field.startedAtUnixTime) {
+    if (10 < time(NULL) - turnSt) {
       canUpdate = false;
       st = time(NULL);
       conn.sendResult(actions, field.agentNum);
