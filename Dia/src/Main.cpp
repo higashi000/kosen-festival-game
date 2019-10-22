@@ -15,7 +15,10 @@ void Main()
 
   while (System::Update()) {
     if (!start) rect.draw(Palette::Magenta);
-    if (rect.leftClicked()) start = true;
+    if (rect.leftClicked()) {
+      start = true;
+      game.turnSt = time(NULL);
+    }
     if (start) game.dispField();
   }
 }
