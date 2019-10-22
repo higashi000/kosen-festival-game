@@ -12,6 +12,7 @@ void main(string[] args)
 
 
   while (turn <= maxTurn) {
+    Thread.sleep(dur!("seconds")(10));
     connector.getFieldData();
     auto field = connector.parseFieldData();
     writeln(turn);
