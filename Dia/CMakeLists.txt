@@ -26,8 +26,8 @@ pkg_check_modules(OPENCV4 REQUIRED opencv4)
 include_directories(
 	"/usr/include"
 
-	"../OpenSiv3D/Siv3D/include/"
-	"../OpenSiv3D/Siv3D/include/ThirdParty"
+	"../../OpenSiv3D/Siv3D/include/"
+	"../../OpenSiv3D/Siv3D/include/ThirdParty"
 )
 
 set(SOURCE_FILES
@@ -69,6 +69,6 @@ target_link_libraries(Siv3D_App
 	-lavutil
 	-lswresample
 
-	${PROJECT_SOURCE_DIR}/../OpenSiv3D/Linux/Build/libSiv3D.a
+	${PROJECT_SOURCE_DIR}/../../OpenSiv3D/Linux/Build/libSiv3D.a
 )
 
