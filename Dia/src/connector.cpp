@@ -40,7 +40,7 @@ Field Connector::getFieldData() {
     }
   }
 
-  field.startedAtUnixTime = std::stoi(parseStr[2]);
+  field.startedAtUnixTime = time(NULL);
   field.turn = s3d::Unicode::Widen(parseStr[3]);
 
   field.color = Array<Array<String>>(field.height, Array<String>(field.width));

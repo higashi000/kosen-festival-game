@@ -5,8 +5,10 @@
 #include "button.hpp"
 #include "connector.hpp"
 #include <vector>
+#include <time.h>
 #include <string>
 #include "field.hpp"
+#include <unistd.h>
 #include "action.hpp"
 
 namespace p30kG {
@@ -20,6 +22,8 @@ class Game {
     std::vector<Action> actions;
     Rect answerSend;
     Rect fieldUpdate;
+    bool canUpdate;
+    time_t st;
 
   public :
     Game();

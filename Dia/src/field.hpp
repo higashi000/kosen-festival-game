@@ -11,7 +11,7 @@ struct Field {
     int width;
     int height;
     Array<Array<String>> point;
-    int startedAtUnixTime;
+    time_t startedAtUnixTime;
     Array<Array<String>> color;
     int agentNum;
     int myTeamID;

@@ -11,6 +11,7 @@ Game::Game() {
   actions = std::vector<Action>(field.agentNum);
   answerSend = Rect(0, 0, 150, 100);
   fieldUpdate = Rect(0, 0, 150, 100);
+  canUpdate = true;
 }
 void Game::dispField() {
   const int dx[] = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -54,21 +55,30 @@ void Game::dispField() {
   font(U"/").draw(Vec2(1100, 410), Color(0, 0, 0));
   font(field.maxTurn).draw(Vec2(1150, 410), Color(0, 0, 0));
 
-  answerSend.setPos(800, 600).draw(Palette::Yellowgreen);
-  font(U"送信").draw(Vec2(800, 600), Color(0, 0, 0));
-  fieldUpdate.setPos(1050, 600).draw(Palette::Pink);
-  font(U"更新").draw(Vec2(1050, 600), Color(0, 0, 0));
-
-  if (answerSend.leftClicked()) {
-    conn.sendResult(actions, field.agentNum);
+  if (canUpdate) {
+    answerSend.setPos(800, 600).draw(Palette::Yellowgreen);
+    font(U"送信").draw(Vec2(800, 600), Color(0, 0, 0));
   }
-  if (fieldUpdate.leftClicked()) {
-    field = conn.getFieldData();
-    setFieldData();
+
+  if (!canUpdate) {
+    if (time(NULL) - st > 10) {
+      canUpdate = true;
+      field = conn.getFieldData();
+      setFieldData();
+    }
+  }
+
+  if (canUpdate) {
+    if (answerSend.leftClicked() || 10 < time(NULL) - field.startedAtUnixTime) {
+      canUpdate = false;
+      st = time(NULL);
+      conn.sendResult(actions, field.agentNum);
+      actions = std::vector<Action>(field.agentNum, Action(0, 0, 0, "stay"));
+    }
   }
 }
 
-void Game::setFieldData() {
+void p30kG::Game::setFieldData() {
   for (int i = 0; i < field.height; ++i) {
     for (int j = 0; j < field.width; ++j) {
       buttons[i][j] = p30kG::Button(field.color[i][j], field.areaPointInfo[i][j], i * 75, j * 75, field.point[i][j]);
