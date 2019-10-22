@@ -68,8 +68,9 @@ void Game::dispField() {
     }
   }
 
+
   if (canUpdate) {
-    if (answerSend.leftClicked() || 10 < time(NULL) - field.startedAtUnixTime) {
+    if (10 < time(NULL) - field.startedAtUnixTime) {
       canUpdate = false;
       st = time(NULL);
       conn.sendResult(actions, field.agentNum);
