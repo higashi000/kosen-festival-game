@@ -5,7 +5,9 @@
 #include "button.hpp"
 #include "connector.hpp"
 #include <vector>
+#include <string>
 #include "field.hpp"
+#include "action.hpp"
 
 namespace p30kG {
 class Game {
@@ -15,6 +17,7 @@ class Game {
     Field field;
     Font font;
     std::vector<bool> isClicked;
+    std::vector<Action> actions;
 
   public :
     Game();

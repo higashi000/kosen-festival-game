@@ -8,10 +8,11 @@ Game::Game() {
   buttons = Array<Array<p30kG::Button>>(field.height, Array<p30kG::Button>(field.width));
   isClicked = std::vector<bool>(field.agentNum);
   isClicked = {false};
+  actions = std::vector<Action>(field.agentNum);
 }
 void Game::dispField() {
-  const int dx[] = {0, -1, -1, 0, 1, 1, 1, 0, -1};
-  const int dy[] = {0, 0, -1, -1, -1, 0, 1, 1, 1};
+  const int dx[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+  const int dy[] = {0, -1, -1, -1, 0, 1, 1, 1};
   for (int y : step(field.height)) {
     for (int x : step(field.width)) {
       buttons[y][x].draw();
@@ -27,9 +28,15 @@ void Game::dispField() {
 
   for (int z : step(field.agentNum)) {
     if (isClicked[z]) {
-      for (int k : step(9)) {
+      for (int k : step(8)) {
         if(0 <= field.myAgentData[z][2] + dy[k] && field.myAgentData[z][2] + dy[k] < field.height && 0 <= field.myAgentData[z][1] + dx[k] && field.myAgentData[z][1] + dx[k] < field.width) {
           buttons[field.myAgentData[z][2] + dy[k]][field.myAgentData[z][1] + dx[k]].canMove();
+          if (buttons[field.myAgentData[z][2] + dy[k]][field.myAgentData[z][1] + dx[k]].isClick()) {
+            auto tmpStr = field.color[field.myAgentData[z][2] + dy[k]][field.myAgentData[z][1] + dx[k]].narrow();
+
+            actions[z] = Action(dx[k], dy[k], field.myAgentData[z][0], std::stoi(tmpStr) == field.rivalTeamID ? "remove" : "move");
+            isClicked[z] = false;
+          }
         }
       }
     }

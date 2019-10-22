@@ -10,6 +10,7 @@ struct Action {
   int agentID;
   std::string moveType;
 
+  Action();
   Action(int x, int y, int id, std::string move);
 };
 } // namespace p30kG
