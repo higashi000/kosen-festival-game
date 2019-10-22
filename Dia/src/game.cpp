@@ -4,6 +4,7 @@
 namespace p30kG {
 Game::Game() {
   field = conn.getFieldData();
+  turn = 1;
   font = Font(70);
   buttons = Array<Array<p30kG::Button>>(field.height, Array<p30kG::Button>(field.width));
   isClicked = std::vector<bool>(field.agentNum);
@@ -51,20 +52,18 @@ void Game::dispField() {
   font(field.rivalAreaPoint + field.rivalTilePoint).draw(Vec2(1200, 130), Color(255, 0, 0));
 
   font(U"ターン:").draw(Vec2(800, 410), Color(0, 0, 0));
-  font(field.turn).draw(Vec2(1050, 410), Color(0, 0, 0));
-  font(U"/").draw(Vec2(1100, 410), Color(0, 0, 0));
-  font(field.maxTurn).draw(Vec2(1150, 410), Color(0, 0, 0));
+  font(turn).draw(Vec2(1050, 410), Color(0, 0, 0));
+  font(U"/").draw(Vec2(turn < 10 ? 1100 : 1135, 410), Color(0, 0, 0));
+  font(field.maxTurn).draw(Vec2(turn < 10 ? 1150 : 1175, 410), Color(0, 0, 0));
 
-  if (canUpdate) {
-    answerSend.setPos(800, 600).draw(Palette::Yellowgreen);
-    font(U"送信").draw(Vec2(800, 600), Color(0, 0, 0));
-  }
+  font(canUpdate ? U"自分のターン" : U"相手のターン").draw(Vec2(800, 600), Color(0, 0, 0));
 
   if (!canUpdate) {
     if (time(NULL) - st > 10) {
       canUpdate = true;
       field = conn.getFieldData();
       setFieldData();
+      turn++;
     }
   }
 
@@ -75,6 +74,7 @@ void Game::dispField() {
       st = time(NULL);
       conn.sendResult(actions, field.agentNum);
       actions = std::vector<Action>(field.agentNum, Action(0, 0, 0, "stay"));
+      turn++;
     }
   }
 }
