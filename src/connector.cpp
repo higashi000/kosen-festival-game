@@ -111,6 +111,37 @@ Field Connector::getFieldData() {
   return field;
 }
 
+void Connector::sendResult(std::vector<Action> actions, int agentNum) {
+  std::string sendStr = "2g ";
+
+  for (int i : step(agentNum)) {
+    sendStr += std::to_string(actions[i].agentID);
+    sendStr += " ";
+    sendStr += actions[i].moveType;
+    sendStr += " ";
+    sendStr += std::to_string(actions[i].dx);
+    sendStr += " ";
+    sendStr += std::to_string(actions[i].dy);
+    sendStr += ";";
+  }
+
+  int sockfd;
+  Field field;
+  sockaddr_in addr;
+  if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    perror("socket");
+  }
+
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(8081);
+  addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+  connect(sockfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
+
+  write(sockfd, sendStr.c_str(), sendStr.length());
+  close(sockfd);
+}
+
 std::vector<std::string> split(std::string str, char splitChar) {
   std::vector<std::string> parseStr;
 

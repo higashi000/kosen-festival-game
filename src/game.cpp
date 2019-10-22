@@ -9,6 +9,8 @@ Game::Game() {
   isClicked = std::vector<bool>(field.agentNum);
   isClicked = {false};
   actions = std::vector<Action>(field.agentNum);
+  answerSend = Rect(0, 0, 150, 100);
+  fieldUpdate = Rect(0, 0, 150, 100);
 }
 void Game::dispField() {
   const int dx[] = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -42,7 +44,6 @@ void Game::dispField() {
     }
   }
 
-
   font(U"自分の得点:").draw(Vec2(800, 50), Color(0, 0, 255));
   font(field.myAreaPoint + field.myTilePoint).draw(Vec2(1200, 50), Color(0, 0, 255));
   font(U"相手の得点:").draw(Vec2(800, 130), Color(255, 0, 0));
@@ -52,6 +53,19 @@ void Game::dispField() {
   font(field.turn).draw(Vec2(1050, 410), Color(0, 0, 0));
   font(U"/").draw(Vec2(1100, 410), Color(0, 0, 0));
   font(field.maxTurn).draw(Vec2(1150, 410), Color(0, 0, 0));
+
+  answerSend.setPos(800, 600).draw(Palette::Yellowgreen);
+  font(U"送信").draw(Vec2(800, 600), Color(0, 0, 0));
+  fieldUpdate.setPos(1050, 600).draw(Palette::Pink);
+  font(U"更新").draw(Vec2(1050, 600), Color(0, 0, 0));
+
+  if (answerSend.leftClicked()) {
+    conn.sendResult(actions, field.agentNum);
+  }
+  if (fieldUpdate.leftClicked()) {
+    field = conn.getFieldData();
+    setFieldData();
+  }
 }
 
 void Game::setFieldData() {

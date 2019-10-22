@@ -12,13 +12,14 @@
 #include <Siv3D.hpp>
 #include <unistd.h>
 #include "field.hpp"
+#include "action.hpp"
 
 namespace p30kG {
 class Connector {
 
   public:
     Field getFieldData();
-    void sendResult();
+    void sendResult(std::vector<Action> actions, int agentNum);
 };
 
 std::vector<std::string> split(std::string str, char splitChar);

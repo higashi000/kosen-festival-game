@@ -18,6 +18,8 @@ class Game {
     Font font;
     std::vector<bool> isClicked;
     std::vector<Action> actions;
+    Rect answerSend;
+    Rect fieldUpdate;
 
   public :
     Game();
