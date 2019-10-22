@@ -3,11 +3,9 @@ package main
 
 import (
   "github.com/gin-gonic/gin"
-  "fmt"
   "io/ioutil"
   "log"
   "encoding/json"
-  "math/rand"
   "time"
 )
 
@@ -66,7 +64,6 @@ func getFieldData() FieldData {
 func main() {
   r := gin.Default()
   field := getFieldData()
-  fmt.Println(field)
   sendFieldData(r, field)
   rsvActionData(r, &field)
   r.Run()
@@ -89,23 +86,13 @@ func rsvActionData(r *gin.Engine, field *FieldData) {
         field.Teams[1].Agents[i].X = field.Teams[1].Agents[i].X
         field.Teams[1].Agents[i].Y = field.Teams[1].Agents[i].Y
       }
-      updateFieldData(field, actions, 1)
-      dx := []int{-1, -1, 0, 1, 1, 1, 0, -1};
-      dy := []int{0, -1, -1, -1, 0, 1, 1, 1};
-
-      rand.Seed(time.Now().UnixNano())
-      var randAction Actions
-      for i := 0; i < len(field.Teams[0].Agents); i++ {
-        var tmp Action
-        tmp.AgentID = 0
-        tmp.Type = "move"
-        dir := rand.Intn(8)
-        tmp.Dx = dx[dir]
-        tmp.Dy = dy[dir]
-        randAction.AgentActions = append(randAction.AgentActions, tmp)
+      if field.Teams[0].Agents[0].AgentID == actions.AgentActions[0].AgentID {
+        field.Turn += 1
+        updateFieldData(field, actions, 1)
+      } else {
+        field.Turn += 1
+        updateFieldData(field, actions, 2)
       }
-
-      updateFieldData(field, randAction, 2);
   })
 }
 
@@ -193,8 +180,6 @@ func updateFieldData(field *FieldData, action Actions, whichTeam int) {
         tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
       }
 
-      fmt.Println(tmpPos[i][0])
-      fmt.Println(tmpPos[i][1])
       if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[0].TeamID {
         tmp := []int{field.Teams[1].Agents[i].X - 1, field.Teams[1].Agents[i].Y - 1}
         tmpPos = append(tmpPos, tmp)
@@ -229,4 +214,6 @@ func updateFieldData(field *FieldData, action Actions, whichTeam int) {
 
   field.Teams[0].TilePoint = tmpTeam1Tile;
   field.Teams[1].TilePoint = tmpTeam2Tile;
+
+  field.StartedAtUnixTime = int(time.Now().Unix())
 }

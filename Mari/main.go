@@ -58,7 +58,6 @@ func main() {
   matchID := args[6]
   thinkingTime, _ = strconv.Atoi(args[5])
   serverAddress := args[0] + ":" + args[1]
-  fmt.Println(serverAddress)
 
   listener, err := net.Listen("tcp", serverAddress)
 
@@ -93,7 +92,6 @@ func connectClient(listener net.Listener, serverPORT string, cntConect *int, sta
     fmt.Println("error")
   }
 
-  fmt.Println(string(rsvData))
   switch string(rsvData[0:2]) {
     case "sf" :
       conn.Write([]byte(convertJsonToSendData(matchID, serverPORT)))
@@ -180,7 +178,6 @@ func sendResult(solverAnswer []Action, port string, matchID string) {
   }
   sendMoveInform += `]}`
 
-  fmt.Println(sendMoveInform)
 
 //  procon30RequestUrl := "http://" + management + ":"+ port + "/matches/"  + matchID + "/action"
   procon30RequestUrl := "http://localhost:" + port + "/matches/"  + matchID + "/action"
@@ -202,7 +199,6 @@ func sendResult(solverAnswer []Action, port string, matchID string) {
   client := &http.Client{}
   resp, err := client.Do(req)
 
-  fmt.Println(resp);
 
   defer resp.Body.Close()
 
@@ -348,10 +344,6 @@ func integrationArea(field FieldData) [][]int {
     }
   }
 
-  for i := 0; i < field.Height; i++ {
-    fmt.Println(areaPoint[i])
-  }
-
   return areaPoint
 }
 
@@ -392,6 +384,7 @@ func convertJsonToSendData(matchID string, serverPORT string) string {
   convertData += "\n"
 
   convertData += strconv.Itoa(fieldData.Turn)
+  fmt.Println(fieldData.Turn)
   convertData += "\n"
 
   for i := 0; i < fieldData.Height; i++ {
@@ -463,7 +456,6 @@ func convertJsonToSendDataForGUI(matchID string, serverPORT string) string {
 
   requestFieldData(matchID, serverPORT, &rsvData)
 
-  fmt.Println("aaa");
   if err := json.Unmarshal(rsvData, &fieldData); err != nil {
     log.Fatal(err)
   }
@@ -510,7 +502,7 @@ func convertJsonToSendDataForGUI(matchID string, serverPORT string) string {
   convertData += strconv.Itoa(len(fieldData.Teams[0].Agents))
   convertData += "\n"
 
-  if fieldData.Teams[0].TeamID == myTeamID {
+  if fieldData.Teams[0].TeamID != myTeamID {
     for i := 0; i < 2; i++ {
       convertData += strconv.Itoa(fieldData.Teams[i].TeamID)
       convertData += "\n"
@@ -553,7 +545,6 @@ func convertJsonToSendDataForGUI(matchID string, serverPORT string) string {
   }
   convertData += maxTurn + "\n"
 
-  fmt.Println("aaa")
   for i := 0; i < fieldData.Height; i++ {
     for j := 0; j < fieldData.Width; j++ {
       convertData += strconv.Itoa(area[i][j])
@@ -565,7 +556,8 @@ func convertJsonToSendDataForGUI(matchID string, serverPORT string) string {
   }
   convertData += "\n"
 
-  fmt.Println(convertData)
+  fmt.Println(fieldData.Turn)
+
 
   return convertData
 }
