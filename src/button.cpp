@@ -67,6 +67,15 @@ p30kG::Button &p30kG::Button::draw(bool onAgent) {
   return *this;
 }
 
+p30kG::Button &p30kG::Button::canMove() {
+  rect.draw(Palette::Yellow);
+  font(point).draw(pos, Palette::Black);
+
+  return *this;
+}
+
+
+
 bool p30kG::Button::isClick() {
   return rect.leftClicked();
 }

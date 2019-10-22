@@ -23,6 +23,7 @@ class Button {
     bool isClick();
     Button& draw();
     Button& draw(bool onAgent);
+    Button& canMove();
 };
 } // namespace p30kG
 

@@ -4,6 +4,7 @@
 #include <Siv3D.hpp>
 #include "button.hpp"
 #include "connector.hpp"
+#include <vector>
 #include "field.hpp"
 
 namespace p30kG {
@@ -13,6 +14,7 @@ class Game {
     Array<Array<Button>> buttons;
     Field field;
     Font font;
+    std::vector<bool> isClicked;
 
   public :
     Game();
