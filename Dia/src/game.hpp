@@ -24,13 +24,13 @@ class Game {
     Rect fieldUpdate;
     bool canUpdate;
     time_t st;
-    time_t turnSt;
     int turn;
 
   public :
     Game();
     void dispField();
     void setFieldData();
+    time_t turnSt;
 };
 }
 
