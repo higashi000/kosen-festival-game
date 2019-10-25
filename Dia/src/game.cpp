@@ -4,7 +4,7 @@
 namespace p30kG {
 Game::Game() {
   field = conn.getFieldData();
-  turn = 30;
+  turn = 1;
   font = Font(70);
   result = Font(100);
   buttons = Array<Array<p30kG::Button>>(field.height, Array<p30kG::Button>(field.width));
