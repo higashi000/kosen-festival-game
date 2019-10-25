@@ -103,7 +103,8 @@ func connectClient(listener net.Listener, serverPORT string, cntConect *int, sta
       rsvGUIData(cntConect, string(rsvData[3:n]), serverPORT)
     case "gg" :
       rsvHumanData(cntConect, string(rsvData[3:n]), serverPORT)
-
+    case "rf" :
+      reLoadFieldData(serverPORT)
   }
 }
 
@@ -203,6 +204,23 @@ func sendResult(solverAnswer []Action, port string, matchID string) {
   defer resp.Body.Close()
 
   time.Sleep(1500 * time.Millisecond)
+}
+
+func reLoadFieldData(port string) {
+  reqURL := "http://localhost:" + port + "/reload/1"
+  fmt.Println(reqURL)
+
+  req, err := http.NewRequest("GET", reqURL, nil)
+  if err != nil {
+    fmt.Println("error")
+    return
+  }
+  req.Header.Set("Authorization", "a!KUSAA!!")
+  req.Header.Add("Content-Type", "application/json")
+
+  client := new(http.Client)
+  resp, err := client.Do(req)
+  defer resp.Body.Close()
 }
 
 func requestFieldData(matchID string, port string, rsvData *[]byte) {

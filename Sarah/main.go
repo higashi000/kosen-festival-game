@@ -4,6 +4,7 @@ package main
 import (
   "github.com/gin-gonic/gin"
   "io/ioutil"
+  "fmt"
   "log"
   "encoding/json"
   "time"
@@ -27,6 +28,10 @@ type FieldData struct {
 		AreaPoint int `json:"areaPoint"`
 	} `json:"teams"`
 	Actions []interface{} `json:"actions"`
+}
+
+type Test struct {
+  Num int `json:num`
 }
 
 // エージェントの行動を受け取る構造体 {{{
@@ -57,6 +62,7 @@ func getFieldData() FieldData {
   if err := json.Unmarshal(bytes, &field); err != nil {
     log.Fatal(err)
   }
+  fmt.Println(field)
 
   return field
 }
@@ -76,24 +82,35 @@ func sendFieldData(r *gin.Engine, field FieldData) {
       })
 }
 
+func reLoadFieldData(r *gin.Engine, field *FieldData) {
+  r.GET("/reload/:id", func(c *gin.Context) {
+      fmt.Println(field.Teams[0].Agents)
+      *field = getFieldData()
+      fmt.Println(field.Teams[0].Agents)
+      var test Test;
+      test.Num = 10;
+      c.JSON(200, test)
+      })
+}
+
 func rsvActionData(r *gin.Engine, field *FieldData) {
   var actions Actions
-  r.POST("/matches/:id/action", func(c *gin.Context) {
-      c.BindJSON(&actions)
-      for i := 0; i < len(field.Teams[0].Agents); i++ {
+    r.POST("/matches/:id/action", func(c *gin.Context) {
+        c.BindJSON(&actions)
+        for i := 0; i < len(field.Teams[0].Agents); i++ {
         field.Teams[0].Agents[i].X = field.Teams[0].Agents[i].X
         field.Teams[0].Agents[i].Y = field.Teams[0].Agents[i].Y
         field.Teams[1].Agents[i].X = field.Teams[1].Agents[i].X
         field.Teams[1].Agents[i].Y = field.Teams[1].Agents[i].Y
-      }
-      if field.Teams[0].Agents[0].AgentID == actions.AgentActions[0].AgentID {
+        }
+        if field.Teams[0].Agents[0].AgentID == actions.AgentActions[0].AgentID {
         field.Turn += 1
         updateFieldData(field, actions, 1)
-      } else {
+        } else {
         field.Turn += 1
         updateFieldData(field, actions, 2)
-      }
-  })
+        }
+        })
 }
 
 func checkDuplicate(whichTeam bool, tmpPos [][]int, agentNum int, field FieldData) {
@@ -102,12 +119,12 @@ func checkDuplicate(whichTeam bool, tmpPos [][]int, agentNum int, field FieldDat
       for j := 0; j < len(tmpPos); j++ {
         if i != j && tmpPos[i][0] == tmpPos[j][0] && tmpPos[i][1] == tmpPos[j][1] {
           tmpPos[i][0] = field.Teams[0].Agents[i].X - 1
-          tmpPos[i][1] = field.Teams[0].Agents[i].Y - 1
+            tmpPos[i][1] = field.Teams[0].Agents[i].Y - 1
 
-          if j < agentNum {
-            tmpPos[j][0] = field.Teams[0].Agents[j].X - 1
-            tmpPos[j][1] = field.Teams[0].Agents[j].Y - 1
-          }
+            if j < agentNum {
+              tmpPos[j][0] = field.Teams[0].Agents[j].X - 1
+                tmpPos[j][1] = field.Teams[0].Agents[j].Y - 1
+            }
         }
       }
     }
@@ -116,12 +133,12 @@ func checkDuplicate(whichTeam bool, tmpPos [][]int, agentNum int, field FieldDat
       for j := 0; j < len(tmpPos); j++ {
         if i != j && tmpPos[i][0] == tmpPos[j][0] && tmpPos[i][1] == tmpPos[j][1] {
           tmpPos[i][0] = field.Teams[1].Agents[i].X - 1
-          tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
+            tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
 
-          if j < agentNum {
-            tmpPos[j][0] = field.Teams[0].Agents[j].X - 1
-            tmpPos[j][1] = field.Teams[0].Agents[j].Y - 1
-          }
+            if j < agentNum {
+              tmpPos[j][0] = field.Teams[0].Agents[j].X - 1
+                tmpPos[j][1] = field.Teams[0].Agents[j].Y - 1
+            }
         }
       }
     }
@@ -129,91 +146,91 @@ func checkDuplicate(whichTeam bool, tmpPos [][]int, agentNum int, field FieldDat
 }
 
 func updateFieldData(field *FieldData, action Actions, whichTeam int) {
-  agentNum := len(field.Teams[0].Agents)
-  tmpPos := make([][]int, agentNum * 2)
+agentNum := len(field.Teams[0].Agents)
+            tmpPos := make([][]int, agentNum * 2)
 
-  for i := 0; i < agentNum * 2; i++ {
-    tmpPos[i] = []int{0, 0}
-  }
+            for i := 0; i < agentNum * 2; i++ {
+              tmpPos[i] = []int{0, 0}
+            }
 
-  if whichTeam == field.Teams[0].TeamID {
-    for i := 0; i < agentNum; i++ {
-      tmpPos[i][0] = field.Teams[0].Agents[i].X + action.AgentActions[i].Dx - 1
-      tmpPos[i][1] = field.Teams[0].Agents[i].Y + action.AgentActions[i].Dy - 1
+          if whichTeam == field.Teams[0].TeamID {
+            for i := 0; i < agentNum; i++ {
+              tmpPos[i][0] = field.Teams[0].Agents[i].X + action.AgentActions[i].Dx - 1
+                tmpPos[i][1] = field.Teams[0].Agents[i].Y + action.AgentActions[i].Dy - 1
 
-      if tmpPos[i][0] < 0 || field.Width <= tmpPos[i][0] {
-        tmpPos[i][0] = field.Teams[0].Agents[i].X - 1
-        tmpPos[i][1] = field.Teams[0].Agents[i].Y - 1
-      } else if tmpPos[i][1] < 0 || field.Height <= tmpPos[i][1] {
-        tmpPos[i][0] = field.Teams[0].Agents[i].X - 1
-        tmpPos[i][1] = field.Teams[0].Agents[i].Y - 1
-      }
+                if tmpPos[i][0] < 0 || field.Width <= tmpPos[i][0] {
+                  tmpPos[i][0] = field.Teams[0].Agents[i].X - 1
+                    tmpPos[i][1] = field.Teams[0].Agents[i].Y - 1
+                } else if tmpPos[i][1] < 0 || field.Height <= tmpPos[i][1] {
+                  tmpPos[i][0] = field.Teams[0].Agents[i].X - 1
+                    tmpPos[i][1] = field.Teams[0].Agents[i].Y - 1
+                }
 
-      if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[1].TeamID {
-        tmp := []int{field.Teams[0].Agents[i].X - 1, field.Teams[0].Agents[i].Y - 1}
-        tmpPos = append(tmpPos, tmp)
-      }
-    }
+              if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[1].TeamID {
+tmp := []int{field.Teams[0].Agents[i].X - 1, field.Teams[0].Agents[i].Y - 1}
+     tmpPos = append(tmpPos, tmp)
+              }
+            }
 
-    checkDuplicate(true, tmpPos, agentNum, *field)
-    checkDuplicate(true, tmpPos, agentNum, *field)
+            checkDuplicate(true, tmpPos, agentNum, *field)
+              checkDuplicate(true, tmpPos, agentNum, *field)
 
-    for i := 0; i < agentNum; i++ {
-      if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[1].TeamID {
-        field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = 0
-      } else {
-        field.Teams[0].Agents[i].X = tmpPos[i][0] + 1
-        field.Teams[0].Agents[i].Y = tmpPos[i][1] + 1
-        field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = field.Teams[0].TeamID
-      }
-    }
-  } else {
-    for i := 0; i < agentNum; i++ {
-      tmpPos[i][0] = field.Teams[1].Agents[i].X + action.AgentActions[i].Dx - 1
-      tmpPos[i][1] = field.Teams[1].Agents[i].Y + action.AgentActions[i].Dy - 1
+              for i := 0; i < agentNum; i++ {
+                if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[1].TeamID {
+                  field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = 0
+                } else {
+                  field.Teams[0].Agents[i].X = tmpPos[i][0] + 1
+                    field.Teams[0].Agents[i].Y = tmpPos[i][1] + 1
+                    field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = field.Teams[0].TeamID
+                }
+              }
+          } else {
+            for i := 0; i < agentNum; i++ {
+              tmpPos[i][0] = field.Teams[1].Agents[i].X + action.AgentActions[i].Dx - 1
+                tmpPos[i][1] = field.Teams[1].Agents[i].Y + action.AgentActions[i].Dy - 1
 
-      if tmpPos[i][0] < 0 || field.Width <= tmpPos[i][0] {
-        tmpPos[i][0] = field.Teams[1].Agents[i].X - 1
-        tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
-      } else if tmpPos[i][1] < 0 || field.Height <= tmpPos[i][1] {
-        tmpPos[i][0] = field.Teams[1].Agents[i].X - 1
-        tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
-      }
+                if tmpPos[i][0] < 0 || field.Width <= tmpPos[i][0] {
+                  tmpPos[i][0] = field.Teams[1].Agents[i].X - 1
+                    tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
+                } else if tmpPos[i][1] < 0 || field.Height <= tmpPos[i][1] {
+                  tmpPos[i][0] = field.Teams[1].Agents[i].X - 1
+                    tmpPos[i][1] = field.Teams[1].Agents[i].Y - 1
+                }
 
-      if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[0].TeamID {
-        tmp := []int{field.Teams[1].Agents[i].X - 1, field.Teams[1].Agents[i].Y - 1}
-        tmpPos = append(tmpPos, tmp)
-      }
-    }
+              if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[0].TeamID {
+tmp := []int{field.Teams[1].Agents[i].X - 1, field.Teams[1].Agents[i].Y - 1}
+     tmpPos = append(tmpPos, tmp)
+              }
+            }
 
-    checkDuplicate(false, tmpPos, agentNum, *field)
-    checkDuplicate(false, tmpPos, agentNum, *field)
+            checkDuplicate(false, tmpPos, agentNum, *field)
+              checkDuplicate(false, tmpPos, agentNum, *field)
 
-    for i := 0; i < agentNum; i++ {
-      if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[0].TeamID {
-        field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = 0
-      } else {
-        field.Teams[1].Agents[i].X = tmpPos[i][0] + 1
-        field.Teams[1].Agents[i].Y = tmpPos[i][1] + 1
-        field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = field.Teams[1].TeamID
-      }
-    }
-  }
+              for i := 0; i < agentNum; i++ {
+                if field.Tiled[tmpPos[i][1]][tmpPos[i][0]] == field.Teams[0].TeamID {
+                  field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = 0
+                } else {
+                  field.Teams[1].Agents[i].X = tmpPos[i][0] + 1
+                    field.Teams[1].Agents[i].Y = tmpPos[i][1] + 1
+                    field.Tiled[tmpPos[i][1]][tmpPos[i][0]] = field.Teams[1].TeamID
+                }
+              }
+          }
 
-  tmpTeam1Tile := 0
-  tmpTeam2Tile := 0
-  for i := 0; i < field.Height; i++ {
-    for j := 0; j < field.Width; j++ {
-      if field.Tiled[i][j] == field.Teams[0].TeamID {
-        tmpTeam1Tile += field.Points[i][j]
-      } else if field.Tiled[i][j] == field.Teams[1].TeamID {
-        tmpTeam2Tile += field.Points[i][j]
-      }
-    }
-  }
+tmpTeam1Tile := 0
+                tmpTeam2Tile := 0
+                for i := 0; i < field.Height; i++ {
+                  for j := 0; j < field.Width; j++ {
+                    if field.Tiled[i][j] == field.Teams[0].TeamID {
+                      tmpTeam1Tile += field.Points[i][j]
+                    } else if field.Tiled[i][j] == field.Teams[1].TeamID {
+                      tmpTeam2Tile += field.Points[i][j]
+                    }
+                  }
+                }
 
-  field.Teams[0].TilePoint = tmpTeam1Tile;
-  field.Teams[1].TilePoint = tmpTeam2Tile;
+              field.Teams[0].TilePoint = tmpTeam1Tile;
+              field.Teams[1].TilePoint = tmpTeam2Tile;
 
-  field.StartedAtUnixTime = int(time.Now().Unix())
+              field.StartedAtUnixTime = int(time.Now().Unix())
 }
