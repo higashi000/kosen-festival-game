@@ -16,8 +16,8 @@ class Game {
   private :
     Connector conn;
     Array<Array<Button>> buttons;
-    Field field;
     Font font;
+    Font result = Font(100);
     std::vector<bool> isClicked;
     std::vector<Action> actions;
     Rect answerSend;
@@ -28,9 +28,11 @@ class Game {
 
   public :
     Game();
-    void dispField();
+    bool dispField();
+    void finishGame();
     void setFieldData();
     time_t turnSt;
+    Field field;
 };
 }
 

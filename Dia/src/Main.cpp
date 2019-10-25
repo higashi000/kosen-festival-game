@@ -10,15 +10,33 @@ void Main()
   p30kG::Game game;
 
   game.setFieldData();
-  Rect rect = Rect(683, 384, 500, 500);
+  Rect rect = Rect(433, 259, 500, 250);
+  Font font = Font(100);
+  Font result = Font(100);
   bool start = false;
+  bool finishGame = false;
 
   while (System::Update()) {
-    if (!start) rect.draw(Palette::Magenta);
-    if (rect.leftClicked()) {
-      start = true;
-      game.turnSt = time(NULL);
+    if (!start && !finishGame) {
+      rect.draw(Palette::Magenta);
+      font(U"スタート").draw(Vec2(483, 334), Palette::Black);
+
+      if (rect.leftClicked()) {
+        start = true;
+        game.turnSt = time(NULL);
+      }
     }
-    if (start) game.dispField();
+
+    if (start) {
+      if (!game.dispField()) {
+        start = false;
+        finishGame = true;
+      }
+    }
+
+
+    if (finishGame) {
+      game.finishGame();
+    }
   }
 }

@@ -23,6 +23,7 @@ struct Field {
     int rivalTilePoint;
     int rivalAreaPoint;
     String maxTurn;
+    int maxTurnI;
     String turn;
     Array<Array<String>> areaPointInfo;
 };

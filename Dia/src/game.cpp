@@ -4,8 +4,9 @@
 namespace p30kG {
 Game::Game() {
   field = conn.getFieldData();
-  turn = 1;
+  turn = 30;
   font = Font(70);
+  result = Font(100);
   buttons = Array<Array<p30kG::Button>>(field.height, Array<p30kG::Button>(field.width));
   isClicked = std::vector<bool>(field.agentNum);
   isClicked = {false};
@@ -15,7 +16,7 @@ Game::Game() {
   canUpdate = true;
   turnSt = time(NULL);
 }
-void Game::dispField() {
+bool Game::dispField() {
   const int dx[] = {-1, -1, 0, 1, 1, 1, 0, -1};
   const int dy[] = {0, -1, -1, -1, 0, 1, 1, 1};
   for (int y : step(field.height)) {
@@ -79,6 +80,9 @@ void Game::dispField() {
       turn++;
     }
   }
+
+  if (turn > field.maxTurnI) return false;
+  else return true;
 }
 
 void p30kG::Game::setFieldData() {
@@ -86,6 +90,17 @@ void p30kG::Game::setFieldData() {
     for (int j = 0; j < field.width; ++j) {
       buttons[i][j] = p30kG::Button(field.color[i][j], field.areaPointInfo[i][j], i * 75, j * 75, field.point[i][j]);
     }
+  }
+}
+
+void Game::finishGame() {
+  int win;
+  if ((field.myTilePoint + field.myAreaPoint) > (field.rivalTilePoint + field.rivalAreaPoint)) {
+    result(U"あなたの勝ち！").draw(Vec2(333, 334), Palette::Black);
+  } else if ((field.myTilePoint + field.myAreaPoint) < (field.rivalTilePoint + field.rivalAreaPoint)) {
+    result(U"あなたの負け！").draw(Vec2(333, 334), Palette::Black);
+  } else {
+    result(U"引き分け！").draw(Vec2(433, 334), Palette::Black);
   }
 }
 }

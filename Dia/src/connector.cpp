@@ -81,6 +81,7 @@ Field Connector::getFieldData() {
   field.rivalTilePoint = std::stoi(tmpRivalPoint[0]);
 
   field.maxTurn = s3d::Unicode::Widen(parseStr[12]);
+  field.maxTurnI = std::stoi(parseStr[12]);
 
   field.myAreaPoint = 0;
   field.rivalAreaPoint = 0;
