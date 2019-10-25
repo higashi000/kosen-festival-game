@@ -3,6 +3,9 @@
 
 namespace p30kG {
 Game::Game() {
+  turn = 1;
+}
+Game::Game(bool tmp) {
   field = conn.getFieldData();
   turn = 1;
   font = Font(70);
@@ -86,6 +89,7 @@ bool Game::dispField() {
 }
 
 void p30kG::Game::setFieldData() {
+  field = conn.getFieldData();
   for (int i = 0; i < field.height; ++i) {
     for (int j = 0; j < field.width; ++j) {
       buttons[i][j] = p30kG::Button(field.color[i][j], field.areaPointInfo[i][j], i * 75, j * 75, field.point[i][j]);
@@ -94,7 +98,6 @@ void p30kG::Game::setFieldData() {
 }
 
 void Game::finishGame() {
-  int win;
   if ((field.myTilePoint + field.myAreaPoint) > (field.rivalTilePoint + field.rivalAreaPoint)) {
     result(U"あなたの勝ち！").draw(Vec2(333, 334), Palette::Black);
   } else if ((field.myTilePoint + field.myAreaPoint) < (field.rivalTilePoint + field.rivalAreaPoint)) {

@@ -14,7 +14,6 @@
 namespace p30kG {
 class Game {
   private :
-    Connector conn;
     Array<Array<Button>> buttons;
     Font font;
     Font result = Font(100);
@@ -24,11 +23,13 @@ class Game {
     Rect fieldUpdate;
     bool canUpdate;
     time_t st;
-    int turn;
 
   public :
     Game();
+    Game(bool tmp);
+    int turn;
     bool dispField();
+    Connector conn;
     void finishGame();
     void setFieldData();
     time_t turnSt;

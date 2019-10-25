@@ -21,6 +21,7 @@ class Connector {
   public:
     Field getFieldData();
     void sendResult(std::vector<Action> actions, int agentNum);
+    void reloadField();
 };
 
 std::vector<std::string> split(std::string str, char splitChar);

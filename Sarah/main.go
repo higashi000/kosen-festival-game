@@ -4,8 +4,9 @@ package main
 import (
   "github.com/gin-gonic/gin"
   "io/ioutil"
-  "fmt"
+  "os"
   "log"
+  "fmt"
   "encoding/json"
   "time"
 )
@@ -62,17 +63,17 @@ func getFieldData() FieldData {
   if err := json.Unmarshal(bytes, &field); err != nil {
     log.Fatal(err)
   }
-  fmt.Println(field)
 
   return field
 }
 
 func main() {
+  turn := 1
   r := gin.Default()
   field := getFieldData()
+  field = reLoadFieldData(r, field)
   sendFieldData(r, field)
-  rsvActionData(r, &field)
-  reLoadFieldData(r, &field)
+  rsvActionData(r, &field, &turn)
   r.Run()
 }
 
@@ -83,18 +84,15 @@ func sendFieldData(r *gin.Engine, field FieldData) {
       })
 }
 
-func reLoadFieldData(r *gin.Engine, field *FieldData) {
-  r.GET("/reload/:id", func(c *gin.Context) {
-      fmt.Println(field.Teams[0].Agents)
-      *field = getFieldData()
-      fmt.Println(field.Teams[0].Agents)
-      var test Test;
-      test.Num = 10;
-      c.JSON(200, test)
+func reLoadFieldData(r *gin.Engine, field FieldData) (FieldData) {
+  r.POST("/reload/:id", func(c *gin.Context) {
+      os.Exit(1)
       })
+
+  return field
 }
 
-func rsvActionData(r *gin.Engine, field *FieldData) {
+func rsvActionData(r *gin.Engine, field *FieldData, turn *int) {
   var actions Actions
     r.POST("/matches/:id/action", func(c *gin.Context) {
         c.BindJSON(&actions)
@@ -111,6 +109,8 @@ func rsvActionData(r *gin.Engine, field *FieldData) {
         field.Turn += 1
         updateFieldData(field, actions, 2)
         }
+        fmt.Println(field.Teams[1].Agents)
+        *field = getFieldData()
         })
 }
 

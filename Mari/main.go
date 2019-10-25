@@ -2,16 +2,17 @@
 package main
 
 import (
-	"fmt"
+  "fmt"
   "net"
   "bytes"
-	"encoding/json"
-	"io/ioutil"
-	"log"
+  "encoding/json"
+  "io/ioutil"
+  "log"
   "strconv"
   "net/http"
   "strings"
   "time"
+  "os"
   "flag"
 )
 
@@ -210,17 +211,19 @@ func reLoadFieldData(port string) {
   reqURL := "http://localhost:" + port + "/reload/1"
   fmt.Println(reqURL)
 
-  req, err := http.NewRequest("GET", reqURL, nil)
+  req, err := http.NewRequest("POST", reqURL, nil)
   if err != nil {
     fmt.Println("error")
     return
   }
   req.Header.Set("Authorization", "a!KUSAA!!")
-  req.Header.Add("Content-Type", "application/json")
+  req.Header.Set("Content-Type", "application/json")
 
-  client := new(http.Client)
+  client := &http.Client{}
   resp, err := client.Do(req)
-  defer resp.Body.Close()
+  resp.Body.Close()
+
+  os.Exit(1)
 }
 
 func requestFieldData(matchID string, port string, rsvData *[]byte) {

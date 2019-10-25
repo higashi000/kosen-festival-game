@@ -1,6 +1,8 @@
 #include <Siv3D.hpp>
 #include "game.hpp"
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 void Main()
 {
@@ -9,8 +11,8 @@ void Main()
 
   p30kG::Game game;
 
-  game.setFieldData();
   Rect rect = Rect(433, 259, 500, 250);
+  Rect restart = Rect(500, 200, 433, 500);
   Font font = Font(100);
   Font result = Font(100);
   bool start = false;
@@ -22,8 +24,11 @@ void Main()
       font(U"スタート").draw(Vec2(483, 334), Palette::Black);
 
       if (rect.leftClicked()) {
+        system("bash ./start.sh");
         start = true;
+        game = p30kG::Game(true);
         game.turnSt = time(NULL);
+        game.setFieldData();
       }
     }
 
@@ -34,9 +39,14 @@ void Main()
       }
     }
 
-
     if (finishGame) {
       game.finishGame();
+      restart.draw(Palette::Magenta);
+      if (restart.leftClicked()) {
+        finishGame = false;
+        game.conn.reloadField();
+        game.turn = 1;
+      }
     }
   }
 }

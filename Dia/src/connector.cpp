@@ -159,4 +159,23 @@ std::vector<std::string> split(std::string str, char splitChar) {
   return parseStr;
 }
 
+void Connector::reloadField() {
+  std::string sendStr = "rf";
+  int sockfd;
+  sockaddr_in addr;
+  if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    perror("socket");
+  }
+
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(8081);
+  addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+  connect(sockfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
+
+  write(sockfd, sendStr.c_str(), sendStr.length());
+  close(sockfd);
+
+}
+
 } // namespace p30kG
