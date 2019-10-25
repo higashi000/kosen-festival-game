@@ -72,6 +72,7 @@ func main() {
   field := getFieldData()
   sendFieldData(r, field)
   rsvActionData(r, &field)
+  reLoadFieldData(r, &field)
   r.Run()
 }
 
